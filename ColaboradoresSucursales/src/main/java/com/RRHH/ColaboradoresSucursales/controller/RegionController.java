@@ -25,7 +25,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
-@RequestMapping("api/v1/regiones")
+@RequestMapping("/api/v1/regiones")
 @Tag(name = "Regiones", description = "Operaciones para gestionar Regiones.")
 public class RegionController {
 
@@ -91,7 +91,7 @@ public class RegionController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Actualizar región", description = "Reemplaza la información de una región existente por ID.")
-    public ResponseEntity<RegionDTO> actualizar(@Valid @PathVariable Long id, @RequestBody Region region) {
+    public ResponseEntity<RegionDTO> actualizar(@PathVariable Long id, @Valid @RequestBody Region region) {
         try {
             RegionDTO actualizadoDTO = regionService.updateRegion(id, region);
             return new ResponseEntity<>(actualizadoDTO, HttpStatus.OK);

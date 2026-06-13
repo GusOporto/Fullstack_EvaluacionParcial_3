@@ -23,6 +23,8 @@ import com.RRHH.ColaboradoresSucursales.assemblers.RegionModelAssembler;
 import com.RRHH.ColaboradoresSucursales.model.Region;
 import com.RRHH.ColaboradoresSucursales.service.RegionService;
 
+import jakarta.validation.Valid;
+
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -63,7 +65,7 @@ public class RegionControllerV2 {
     }
 
     @PostMapping(produces = MediaTypes.HAL_JSON_VALUE)
-    public ResponseEntity<EntityModel<RegionDTO>> agregar(@RequestBody Region region) {
+    public ResponseEntity<EntityModel<RegionDTO>> agregar(@Valid @RequestBody Region region) {
         RegionDTO newRegion = regionService.save(region);
         return ResponseEntity
                 .created(linkTo(methodOn(RegionControllerV2.class).buscarPorId(newRegion.getId())).toUri())
@@ -71,7 +73,7 @@ public class RegionControllerV2 {
     }
 
     @PutMapping(value = "/{id}", produces = MediaTypes.HAL_JSON_VALUE)
-    public ResponseEntity<EntityModel<RegionDTO>> actualizar(@PathVariable Long id, @RequestBody Region region) {
+    public ResponseEntity<EntityModel<RegionDTO>> actualizar(@PathVariable Long id, @Valid @RequestBody Region region) {
         RegionDTO updatedRegion = regionService.updateRegion(id, region);
         return ResponseEntity
                 .ok(assembler.toModel(updatedRegion));

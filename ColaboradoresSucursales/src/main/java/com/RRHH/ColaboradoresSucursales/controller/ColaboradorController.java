@@ -25,7 +25,7 @@ import com.RRHH.ColaboradoresSucursales.service.ColaboradorService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("api/v1/colaboradores")
+@RequestMapping("/api/v1/colaboradores")
 @Tag(name = "Colaboradores", description = "Operaciones para gestionar Colaboradores.")
 public class ColaboradorController {
 
@@ -118,7 +118,7 @@ public class ColaboradorController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Actualizar colaborador", description = "Reemplaza la información de un colaborador existente por ID.")
-    public ResponseEntity<ColaboradorDTO> actualizar(@Valid @PathVariable Long id, @RequestBody Colaborador colab) {
+    public ResponseEntity<ColaboradorDTO> actualizar(@PathVariable Long id, @Valid @RequestBody Colaborador colab) {
         try {
             ColaboradorDTO actualizadoDTO = colaboradorService.updateColaborador(id, colab);
             return new ResponseEntity<>(actualizadoDTO, HttpStatus.OK);

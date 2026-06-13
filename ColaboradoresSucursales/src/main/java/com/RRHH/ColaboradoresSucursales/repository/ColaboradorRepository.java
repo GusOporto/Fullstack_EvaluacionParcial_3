@@ -12,15 +12,11 @@ import com.RRHH.ColaboradoresSucursales.model.Colaborador;
 @Repository
 public interface ColaboradorRepository extends JpaRepository<Colaborador, Long> {
 
-    @Query("SELECT DISTINCT c FROM Colaborador c JOIN c.sucursales s WHERE s.id = :sucursalId")
-    List<Colaborador> findBySucursales(@Param("sucursalId") Long sucursalId);
+    List<Colaborador> findDistinctBySucursalesId(Long sucursalId);
 
-    @Query("SELECT DISTINCT c FROM Colaborador c JOIN c.sucursales s JOIN s.comuna co JOIN co.region r WHERE r.id = :regionId")
-    List<Colaborador> findByRegion(@Param("regionId") Long regionId);
+    List<Colaborador> findDistinctBySucursalesComunaRegionId(Long regionId);
 
-    @Query("SELECT DISTINCT c FROM Colaborador c JOIN c.sucursales s JOIN s.comuna co WHERE co.id = :comunaId")
-    List<Colaborador> findByComuna(@Param("comunaId") Long comunaId);
+    List<Colaborador> findDistinctBySucursalesComunaId(Long comunaId);
 
-    @Query("SELECT c FROM Colaborador c WHERE c.run = :run")
-    List<Colaborador> findByRun(@Param("run") String run);
+    List<Colaborador> findByRun(String run);
 }

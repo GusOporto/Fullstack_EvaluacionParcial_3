@@ -83,13 +83,12 @@ public class ComunaService {
             dto.setRegion("ID: " + comuna.getRegion().getId() + " - " + comuna.getRegion().getNombre());
         }
 
-        List<String> sucursales = sucursalRepository.findAll().stream()
-                .filter(s -> s.getComuna() != null && s.getComuna().getId().equals(comuna.getId()))
+        List<String> sucursales = sucursalRepository.findByComunaId(comuna.getId()).stream()
                 .map(s -> "ID: " + s.getId() + " - " + s.getNombre())
                 .toList();
         dto.setSucursales(sucursales);
 
-        List<String> colaboradores = colaboradorRepository.findByComuna(comuna.getId()).stream()
+        List<String> colaboradores = colaboradorRepository.findDistinctBySucursalesComunaId(comuna.getId()).stream()
                 .map(c -> "RUN: " + c.getRun() + " - " + c.getNombres() + " " + c.getApellidos())
                 .toList();
         dto.setColaboradores(colaboradores);

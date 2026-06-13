@@ -89,21 +89,21 @@ public class ColaboradorService {
 
     public List<ColaboradorDTO> findBySucursales(Long id) {
         log.info("Buscando colaboradores asignados a la sucursal ID: {}", id);
-        return colaboradorRepository.findBySucursales(id).stream()
+        return colaboradorRepository.findDistinctBySucursalesId(id).stream()
                 .map(this::convertirADTO)
                 .toList();
     }
 
     public List<ColaboradorDTO> findByComuna(Long id) {
         log.info("Buscando colaboradores asignados a la comuna ID: {}", id);
-        return colaboradorRepository.findByComuna(id).stream()
+        return colaboradorRepository.findDistinctBySucursalesComunaId(id).stream()
                 .map(this::convertirADTO)
                 .toList();
     }
 
     public List<ColaboradorDTO> findByRegion(Long id) {
         log.info("Buscando colaboradores asignados a la region ID: {}", id);
-        return colaboradorRepository.findByRegion(id).stream()
+        return colaboradorRepository.findDistinctBySucursalesComunaRegionId(id).stream()
                 .map(this::convertirADTO)
                 .toList();
     }

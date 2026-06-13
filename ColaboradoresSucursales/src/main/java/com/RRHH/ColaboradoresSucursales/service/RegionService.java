@@ -51,11 +51,7 @@ public class RegionService {
             throw new RuntimeException("Region no encontrada.");
         }
 
-        List<Sucursal> sucursalesRegion = sucursalRepository.findAll().stream()
-                .filter(s -> s.getComuna() != null &&
-                        s.getComuna().getRegion() != null &&
-                        s.getComuna().getRegion().getId().equals(id))
-                .toList();
+        List<Sucursal> sucursalesRegion = sucursalRepository.findByComunaRegionId(id);
 
         List<SucursalDTO> dtos = new ArrayList<>();
         for (Sucursal s : sucursalesRegion) {
@@ -104,16 +100,12 @@ public class RegionService {
         dto.setId(region.getId());
         dto.setNombre(region.getNombre());
 
-        List<String> comunas = comunaRepository.findAll().stream()
-                .filter(c -> c.getRegion() != null && c.getRegion().getId().equals(region.getId()))
+        List<String> comunas = comunaRepository.findByRegionId(region.getId()).stream()
                 .map(c -> "ID: " + c.getId() + " - " + c.getNombre())
                 .toList();
         dto.setComunas(comunas);
 
-        List<String> sucursales = sucursalRepository.findAll().stream()
-                .filter(s -> s.getComuna() != null &&
-                        s.getComuna().getRegion() != null &&
-                        s.getComuna().getRegion().getId().equals(region.getId()))
+        List<String> sucursales = sucursalRepository.findByComunaRegionId(region.getId()).stream()
                 .map(s -> "ID: " + s.getId() + " - " + s.getNombre())
                 .toList();
         dto.setSucursales(sucursales);

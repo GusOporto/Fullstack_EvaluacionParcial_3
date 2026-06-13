@@ -24,7 +24,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("api/v1/sucursales")
+@RequestMapping("/api/v1/sucursales")
 @Tag(name = "Sucursales", description = "Operaciones para gestionar Sucursales.")
 public class SucursalController {
 
@@ -76,7 +76,7 @@ public class SucursalController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Actualizar sucursal", description = "Reemplaza la información de una sucursal existente por ID.")
-    public ResponseEntity<SucursalDTO> actualizar(@Valid @PathVariable Long id, @RequestBody Sucursal sucursal) {
+    public ResponseEntity<SucursalDTO> actualizar(@PathVariable Long id, @Valid @RequestBody Sucursal sucursal) {
         try {
             SucursalDTO actualizadoDTO = sucursalService.updateSucursal(id, sucursal);
             return new ResponseEntity<>(actualizadoDTO, HttpStatus.OK);

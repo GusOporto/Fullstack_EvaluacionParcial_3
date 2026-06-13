@@ -88,7 +88,7 @@ public class SucursalService {
             }
         }
 
-        List<String> colaboradores = colaboradorRepository.findBySucursales(sucursal.getId()).stream()
+        List<String> colaboradores = colaboradorRepository.findDistinctBySucursalesId(sucursal.getId()).stream()
                 .map(c -> "ID: " + c.getId() + " - " + c.getNombres() + " - " + c.getApellidos())
                 .toList();
 

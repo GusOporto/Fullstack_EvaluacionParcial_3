@@ -76,7 +76,7 @@ public class ComunaController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Actualizar comuna", description = "Reemplaza la información de una comuna existente por ID.")
-    public ResponseEntity<ComunaDTO> actualizar(@Valid @PathVariable Long id, @RequestBody Comuna comuna) {
+    public ResponseEntity<ComunaDTO> actualizar(@PathVariable Long id, @Valid @RequestBody Comuna comuna) {
         try {
             ComunaDTO actualizadoDTO = comunaService.updateComuna(id, comuna);
             return new ResponseEntity<>(actualizadoDTO, HttpStatus.OK);
