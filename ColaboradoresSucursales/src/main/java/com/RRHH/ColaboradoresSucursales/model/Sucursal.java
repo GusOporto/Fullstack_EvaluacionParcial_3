@@ -26,7 +26,7 @@ public class Sucursal {
     private Long id;
 
     @NotBlank
-    @Column(unique = true, nullable = false, length = 30)
+    @Column(nullable = false, length = 30)
     private String nombre;
 
     @NotBlank
@@ -35,7 +35,7 @@ public class Sucursal {
 
     // Relaciones Internas
     @ManyToOne
-    @JoinColumn(name = "comuna_id", nullable = false)
+    @JoinColumn(name = "id_comuna_fk", nullable = false)
     @ToString.Exclude
     private Comuna comuna;
 

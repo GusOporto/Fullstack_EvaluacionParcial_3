@@ -30,7 +30,7 @@ public class Comuna {
 
     // Relaciones Internas
     @ManyToOne
-    @JoinColumn(name = "region_id", nullable = false)
+    @JoinColumn(name = "id_region_fk", nullable = false)
     private Region region;
 
 }
