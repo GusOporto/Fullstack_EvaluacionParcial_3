@@ -19,4 +19,6 @@ public interface ColaboradorRepository extends JpaRepository<Colaborador, Long> 
     List<Colaborador> findDistinctBySucursalesComunaId(Long comunaId);
 
     List<Colaborador> findByRun(String run);
+
+    Cargos findByCargoId(Long cargoId);
 }

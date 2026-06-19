@@ -137,4 +137,13 @@ public class ColaboradorController {
             return new ResponseEntity<>(resultado, HttpStatus.NOT_FOUND);
         }
     }
+
+    @GetMapping("/buscar-por-cargo/{cargoId}")
+    public ResponseEntity<ColaboradorDTO> buscarPorCargo(@PathVariable Long cargoId){
+        CargoDTO cargo = cargoService.buscarPorCargo(cargoId);
+        if (cargo == null) {
+            return ResponseEntity.ok(null);
+        }
+        return ResponseEntity.ok(colaborador)
+    }
 }

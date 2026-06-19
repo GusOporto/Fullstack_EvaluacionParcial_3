@@ -3,22 +3,18 @@ server:
 
 springdoc:
     api-docs:
-        path: /api-docs
-        
+        path: /api-docs 
     swagger-ui:
         path: /doc/swagger-ui.html
     
 spring:
     application:
-        name: ColaboradoresSucursales
-    
+        name: ColaboradoresSucursales    
     flyway:
-        enabled: 'true' 
+        enabled: true 
         baseline-on-migrate: 'true'
-
     jpa:
         show-sql: 'true'
-
     profiles:
         active: dev
 
@@ -30,12 +26,12 @@ spring:
             on-profile: dev
     datasource:
         username: root
-        url: jdbc:mysql://localhost:3306/db_colab_suc?createDatabaseIfNotExist=true
+        url: jdbc:mysql://localhost:3306/db_colab_suc_dev?createDatabaseIfNotExist=true
         driverClassName: com.mysql.cj.jdbc.Driver
         password: ''
     jpa:
         hibernate:
-            ddl-auto: update #actualiza en local
+            ddl-auto: none
 
 ---
 
@@ -65,5 +61,4 @@ spring:
         password: ''
     jpa:
         hibernate:
-            ddl-auto: none
-    
+            ddl-auto: none    

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 
 import com.RRHH.ColaboradoresSucursales.DTO.ColaboradorDTO;
@@ -13,6 +15,8 @@ import com.RRHH.ColaboradoresSucursales.repository.ColaboradorRepository;
 
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
+
+import reactor.core.publisher.Mono;
 
 @Service
 @Transactional
@@ -108,7 +112,19 @@ public class ColaboradorService {
                 .toList();
     }
 
+    public ColaboradorDTO buscarPorCargo(Long id) {
+        log.info("Buscando colaborador con cargo ID: {}", id);
+        Colaborador colaborador = colaboradorRepository.findByCargoId(id);
+        if (colaborador == null) {
+            return null;
+        }
+        return convertirADTO(colaborador);
+    }
+
     private ColaboradorDTO convertirADTO(Colaborador colaborador) {
+        if (colaborador == null)
+            return null;
+
         ColaboradorDTO dto = new ColaboradorDTO();
         dto.setId(colaborador.getId());
         dto.setRun(colaborador.getRun());
@@ -119,6 +135,22 @@ public class ColaboradorService {
         dto.setCorreo(colaborador.getCorreo());
         dto.setDireccion(colaborador.getDireccion());
 
+        try {
+            CargoExternoDTO cargoExternoDTO = webClientBuilder.build()
+                    .get()
+                    .uri("http://localhost:8082/api/v1/cargos/buscar-por-colaborador" + colaborador.getId())
+                    .retrieve()
+                    .onStatus(HttpStatusCode::is4xxClientError, response -> Mono.empty())
+                    .bodyToMono(CargoExternoDTO.class)
+                    .block();
+
+            dto.setCargoId(cargoExternoDTO.getId());
+
+        } catch (Exception e) {
+            dto.setCargoId(null);
+        }
+        return dto;
+
         List<String> sucursales = new ArrayList<>();
         if (colaborador.getSucursales() != null) {
             for (Sucursal s : colaborador.getSucursales()) {
@@ -127,7 +159,6 @@ public class ColaboradorService {
         }
         dto.setSucursales(sucursales);
 
-        // dto.setCargoId(colaborador.getCargoId());
         // dto.setCurriculumId(colaborador.getCurriculumId());
         // dto.setTituloId(colaborador.getTitulosId());
 

@@ -27,7 +27,7 @@ public class ColaboradorDTO {
     private List<String> sucursales;
 
     // Relaciones Externas
-    // private Integer cargoId;
+    private Integer cargoId;
     // private Integer curriculumId;
     // private List<Integer> titulosId;
 }
