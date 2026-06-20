@@ -103,7 +103,7 @@ public class ColaboradorController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
-
+    
     @PatchMapping("/{id}")
     @Operation(summary = "Editar colaborador", description = "Actualiza la información de un colaborador existente por ID.")
     public ResponseEntity<ColaboradorDTO> editarColaborador(@PathVariable Long id,
@@ -115,6 +115,7 @@ public class ColaboradorController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
 
     @PutMapping("/{id}")
     @Operation(summary = "Actualizar colaborador", description = "Reemplaza la información de un colaborador existente por ID.")
