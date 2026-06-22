@@ -1,4 +1,4 @@
-package com.jedi.gateway;
+package com.RRHH.gateway;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
