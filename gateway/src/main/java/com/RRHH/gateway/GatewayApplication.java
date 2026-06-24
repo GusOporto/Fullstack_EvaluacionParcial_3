@@ -1,13 +1,13 @@
-package com.RRHH.ColaboradoresSucursales;
+package com.RRHH.gateway;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ColaboradoresSucursalesApplication {
+public class GatewayApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(ColaboradoresSucursalesApplication.class, args);
+		SpringApplication.run(GatewayApplication.class, args);
 	}
 
 }

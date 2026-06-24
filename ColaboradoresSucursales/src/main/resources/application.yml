@@ -1,11 +1,13 @@
 server:
-    port: '8081'
+    port: 0
 
 springdoc:
     api-docs:
-        path: /api-docs 
-    swagger-ui:
-        path: /doc/swagger-ui.html
+        path: /ColaboradoresSucursales/api-docs
+    packages-to-scan: 
+        com.RRHH.ColaboradoresSucursales.controller
+    use-management-port: false
+    override-with-generic-response: true
     
 spring:
     application:
@@ -17,6 +19,11 @@ spring:
         show-sql: 'true'
     profiles:
         active: dev
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
 
 ---
 
