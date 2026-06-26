@@ -18,6 +18,10 @@ spring:
               uri: lb://laborales
               predicates:
                 - Path=/api/v1/laborales/**, /laborales/api-docs/**
+               - id: rrhh-service
+              uri: lb://rrhh
+              predicates:
+                - Path=/api/v1/areas/**, /api/v1/tipos-contrato/**, /rrhh/api-docs/**
 
 springdoc:
   swagger-ui:
@@ -27,5 +31,7 @@ springdoc:
         url: /ColaboradoresSucursales/api-docs
       - name: Microservicio laborales
         url: /laborales/api-docs
+      - name: Microservicio rrhh
+        url: /rrhh/api-docs
   api-docs:
     enabled: true
