@@ -18,7 +18,7 @@ spring:
               uri: lb://laborales
               predicates:
                 - Path=/api/v1/laborales/**, /laborales/api-docs/**
-               - id: rrhh-service
+            - id: rrhh-service
               uri: lb://rrhh
               predicates:
                 - Path=/api/v1/areas/**, /api/v1/tipos-contrato/**, /rrhh/api-docs/**
