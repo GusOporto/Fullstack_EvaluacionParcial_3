@@ -4,19 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 
 import com.RRHH.ColaboradoresSucursales.DTO.ColaboradorDTO;
 import com.RRHH.ColaboradoresSucursales.model.Colaborador;
-import com.RRHH.ColaboradoresSucursales.model.Sucursal;
 import com.RRHH.ColaboradoresSucursales.repository.ColaboradorRepository;
 
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
-
-import reactor.core.publisher.Mono;
 
 @Service
 @Transactional
@@ -24,26 +19,35 @@ import reactor.core.publisher.Mono;
 public class ColaboradorService {
 
     @Autowired
+    private ColaboradorValidaciones colaboradorValidaciones;
+
+    @Autowired
     private ColaboradorRepository colaboradorRepository;
 
     public List<ColaboradorDTO> findAll() {
         log.info("Buscando todos los colaboradores...");
-        return colaboradorRepository.findAll().stream()
-                .map(this::convertirADTO)
-                .toList();
+        List<ColaboradorDTO> listaDTOs = new ArrayList<>();
+        for (Colaborador c : colaboradorRepository.findAll()) {
+            listaDTOs.add(colaboradorValidaciones.convertirADTO(c));
+        }
+
+        return listaDTOs;
     }
 
     public ColaboradorDTO findById(Long id) {
         log.info("Buscando colaborador con ID: {}", id);
         Colaborador colaborador = colaboradorRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Colaborador no encontrado."));
-        return convertirADTO(colaborador);
+        return colaboradorValidaciones.convertirADTO(colaborador);
     }
 
     public ColaboradorDTO save(Colaborador colaborador) {
         log.info("Guardando colaborador...");
-        Colaborador guardado = colaboradorRepository.save(colaborador);
-        return convertirADTO(guardado);
+        if (colaboradorValidaciones.validarNullVacio(colaborador)) {
+            Colaborador guardado = colaboradorRepository.save(colaborador);
+            return colaboradorValidaciones.convertirADTO(guardado);
+        }
+        return null;
     }
 
     public String delete(Long id) {
@@ -81,87 +85,46 @@ public class ColaboradorService {
             col2.setSucursales(col1.getSucursales());
 
         Colaborador actualizado = colaboradorRepository.save(col2);
-        return convertirADTO(actualizado);
+        return colaboradorValidaciones.convertirADTO(actualizado);
     }
 
-    public List<ColaboradorDTO> findByRun(String run) {
+    public ColaboradorDTO findByRun(String run) {
         log.info("Buscando colaborador RUN: {}", run);
-        return colaboradorRepository.findByRun(run).stream()
-                .map(this::convertirADTO)
-                .toList();
+        Colaborador c = colaboradorRepository.findByRun(run);
+        if (c == null) {
+            throw new RuntimeException("Colaborador no encontrado");
+        }
+        return colaboradorValidaciones.convertirADTO(c);
     }
 
     public List<ColaboradorDTO> findBySucursales(Long id) {
         log.info("Buscando colaboradores asignados a la sucursal ID: {}", id);
         return colaboradorRepository.findDistinctBySucursalesId(id).stream()
-                .map(this::convertirADTO)
+                .map(colaboradorValidaciones::convertirADTO)
                 .toList();
     }
 
     public List<ColaboradorDTO> findByComuna(Long id) {
         log.info("Buscando colaboradores asignados a la comuna ID: {}", id);
         return colaboradorRepository.findDistinctBySucursalesComunaId(id).stream()
-                .map(this::convertirADTO)
+                .map(colaboradorValidaciones::convertirADTO)
                 .toList();
     }
 
     public List<ColaboradorDTO> findByRegion(Long id) {
         log.info("Buscando colaboradores asignados a la region ID: {}", id);
         return colaboradorRepository.findDistinctBySucursalesComunaRegionId(id).stream()
-                .map(this::convertirADTO)
+                .map(colaboradorValidaciones::convertirADTO)
                 .toList();
     }
 
-    public ColaboradorDTO buscarPorCargo(Long id) {
-        log.info("Buscando colaborador con cargo ID: {}", id);
-        Colaborador colaborador = colaboradorRepository.findByCargoId(id);
-        if (colaborador == null) {
-            return null;
-        }
-        return convertirADTO(colaborador);
-    }
+    // public ColaboradorDTO buscarPorCargo(Long id) {
+    // log.info("Buscando colaborador con cargo ID: {}", id);
+    // Colaborador colaborador = colaboradorRepository.findByCargoId(id);
+    // if (colaborador == null) {
+    // return null;
+    // }
+    // return colaboradorValidaciones.convertirADTO(colaborador);
+    // }
 
-    private ColaboradorDTO convertirADTO(Colaborador colaborador) {
-        if (colaborador == null)
-            return null;
-
-        ColaboradorDTO dto = new ColaboradorDTO();
-        dto.setId(colaborador.getId());
-        dto.setRun(colaborador.getRun());
-        dto.setNombres(colaborador.getNombres());
-        dto.setApellidos(colaborador.getApellidos());
-        dto.setFechaNacimiento(colaborador.getFechaNacimiento());
-        dto.setTelefono(colaborador.getTelefono());
-        dto.setCorreo(colaborador.getCorreo());
-        dto.setDireccion(colaborador.getDireccion());
-
-        try {
-            CargoExternoDTO cargoExternoDTO = webClientBuilder.build()
-                    .get()
-                    .uri("http://laborales/api/v1/cargos/buscar-por-colaborador" + colaborador.getId())
-                    .retrieve()
-                    .onStatus(HttpStatusCode::is4xxClientError, response -> Mono.empty())
-                    .bodyToMono(CargoExternoDTO.class)
-                    .block();
-
-            dto.setCargoId(cargoExternoDTO.getId());
-
-        } catch (Exception e) {
-            dto.setCargoId(null);
-        }
-        return dto;
-
-        List<String> sucursales = new ArrayList<>();
-        if (colaborador.getSucursales() != null) {
-            for (Sucursal s : colaborador.getSucursales()) {
-                sucursales.add("ID: " + s.getId() + " - " + s.getNombre());
-            }
-        }
-        dto.setSucursales(sucursales);
-
-        // dto.setCurriculumId(colaborador.getCurriculumId());
-        // dto.setTituloId(colaborador.getTitulosId());
-
-        return dto;
-    }
 }

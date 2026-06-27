@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.RRHH.ColaboradoresSucursales.DTO.ComunaDTO;
+import com.RRHH.ColaboradoresSucursales.DTO.SucursalDTO;
 import com.RRHH.ColaboradoresSucursales.model.Comuna;
+import com.RRHH.ColaboradoresSucursales.model.Sucursal;
 import com.RRHH.ColaboradoresSucursales.repository.ColaboradorRepository;
 import com.RRHH.ColaboradoresSucursales.repository.ComunaRepository;
 import com.RRHH.ColaboradoresSucursales.repository.SucursalRepository;
@@ -26,12 +28,12 @@ public class ComunaService {
     private SucursalRepository sucursalRepository;
 
     @Autowired
-    private ColaboradorRepository colaboradorRepository;
+    private ComunaValidaciones comunaValidaciones;
 
     public List<ComunaDTO> findAll() {
         log.info("Buscando todas las comunas...");
         return comunaRepository.findAll().stream()
-                .map(this::convertirADTO)
+                .map(comunaValidaciones::convertirADTO)
                 .toList();
     }
 
@@ -39,13 +41,13 @@ public class ComunaService {
         log.info("Buscando la comuna con ID: {}", id);
         Comuna comuna = comunaRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Comuna no encontrada."));
-        return convertirADTO(comuna);
+        return comunaValidaciones.convertirADTO(comuna);
     }
 
     public ComunaDTO save(Comuna comuna) {
         log.info("Guardando nueva comuna: {}", comuna.getNombre());
         Comuna guardado = comunaRepository.save(comuna);
-        return convertirADTO(guardado);
+        return comunaValidaciones.convertirADTO(guardado);
     }
 
     public String delete(Long id) {
@@ -71,29 +73,28 @@ public class ComunaService {
             comuna2.setRegion(comuna1.getRegion());
         }
         Comuna actualizado = comunaRepository.save(comuna2);
-        return convertirADTO(actualizado);
+        return comunaValidaciones.convertirADTO(actualizado);
     }
 
-    private ComunaDTO convertirADTO(Comuna comuna) {
-        ComunaDTO dto = new ComunaDTO();
-        dto.setId(comuna.getId());
-        dto.setNombre(comuna.getNombre());
-
-        if (comuna.getRegion() != null) {
-            dto.setRegion("ID: " + comuna.getRegion().getId() + " - " + comuna.getRegion().getNombre());
+    public List<SucursalDTO> findSucursalesByComunaId(Long id) {
+        log.info("Buscando sucursales por Comuna ID: {}", id);
+        if (!comunaRepository.existsById(id)) {
+            throw new RuntimeException("Comuna no encontrada.");
         }
 
-        List<String> sucursales = sucursalRepository.findByComunaId(comuna.getId()).stream()
-                .map(s -> "ID: " + s.getId() + " - " + s.getNombre())
-                .toList();
-        dto.setSucursales(sucursales);
+        List<Sucursal> sucursalesComuna = sucursalRepository.findByComunaId(id);
 
-        List<String> colaboradores = colaboradorRepository.findDistinctBySucursalesComunaId(comuna.getId()).stream()
-                .map(c -> "RUN: " + c.getRun() + " - " + c.getNombres() + " " + c.getApellidos())
-                .toList();
-        dto.setColaboradores(colaboradores);
-
-        return dto;
+        List<SucursalDTO> dtos = new java.util.ArrayList<>();
+        for (Sucursal s : sucursalesComuna) {
+            SucursalDTO dto = new SucursalDTO();
+            dto.setId(s.getId());
+            dto.setNombre(s.getNombre());
+            dto.setDireccion(s.getDireccion());
+            dto.setRegion("ID: " + s.getComuna().getRegion().getId() + " - " + s.getComuna().getRegion().getNombre());
+            dto.setComuna("ID: " + s.getComuna().getId() + " - " + s.getComuna().getNombre());
+            dtos.add(dto);
+        }
+        return dtos;
     }
 
 }

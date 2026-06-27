@@ -22,6 +22,8 @@ import com.RRHH.ColaboradoresSucursales.service.RegionService;
 
 import jakarta.validation.Valid;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
@@ -34,6 +36,10 @@ public class RegionController {
 
     @GetMapping
     @Operation(summary = "Listar regiones", description = "Obtiene una lista de todas las regiones registradas.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Lista de regiones obtenida exitosamente"),
+        @ApiResponse(responseCode = "204", description = "No hay regiones registradas")
+    })
     public ResponseEntity<List<RegionDTO>> listar() {
         List<RegionDTO> regions = regionService.findAll();
         if (regions.isEmpty()) {
@@ -44,6 +50,10 @@ public class RegionController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Buscar región por ID", description = "Obtiene una región específica por su ID.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Región encontrada exitosamente"),
+        @ApiResponse(responseCode = "404", description = "Región no encontrada")
+    })
     public ResponseEntity<RegionDTO> buscarPorId(@PathVariable Long id) {
         try {
             RegionDTO region = regionService.findById(id);
@@ -55,6 +65,11 @@ public class RegionController {
 
     @GetMapping("/{id}/sucursales")
     @Operation(summary = "Listar sucursales de la región", description = "Obtiene las sucursales asociadas a la región.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Lista de sucursales obtenida exitosamente"),
+        @ApiResponse(responseCode = "204", description = "No hay sucursales asociadas"),
+        @ApiResponse(responseCode = "404", description = "Región no encontrada")
+    })
     public ResponseEntity<List<SucursalDTO>> listarSucursalesPorRegion(@PathVariable Long id) {
         try {
             List<SucursalDTO> sucursales = regionService.findSucursalesByRegionId(id);
@@ -69,6 +84,10 @@ public class RegionController {
 
     @PostMapping
     @Operation(summary = "Agregar región", description = "Crea una nueva región en el sistema.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "201", description = "Región creada exitosamente"),
+        @ApiResponse(responseCode = "400", description = "Datos de entrada inválidos")
+    })
     public ResponseEntity<RegionDTO> agregar(@Valid @RequestBody Region region) {
         try {
             RegionDTO guardadoDTO = regionService.save(region);
@@ -80,6 +99,10 @@ public class RegionController {
 
     @PatchMapping("/{id}")
     @Operation(summary = "Editar región", description = "Actualiza la información de una región existente por ID.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Región actualizada exitosamente"),
+        @ApiResponse(responseCode = "404", description = "Región no encontrada")
+    })
     public ResponseEntity<RegionDTO> editarRegion(@PathVariable Long id, @RequestBody Region region) {
         try {
             RegionDTO editadoDTO = regionService.updateRegion(id, region);
@@ -91,6 +114,10 @@ public class RegionController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Actualizar región", description = "Reemplaza la información de una región existente por ID.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Región actualizada exitosamente"),
+        @ApiResponse(responseCode = "404", description = "Región no encontrada")
+    })
     public ResponseEntity<RegionDTO> actualizar(@PathVariable Long id, @Valid @RequestBody Region region) {
         try {
             RegionDTO actualizadoDTO = regionService.updateRegion(id, region);
@@ -102,6 +129,10 @@ public class RegionController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Eliminar región", description = "Elimina una región específica del sistema por ID.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Región eliminada exitosamente"),
+        @ApiResponse(responseCode = "404", description = "Región no encontrada")
+    })
     public ResponseEntity<?> eliminar(@PathVariable Long id) {
         String resultado = regionService.delete(id);
         if (resultado.contains("exitosamente")) {

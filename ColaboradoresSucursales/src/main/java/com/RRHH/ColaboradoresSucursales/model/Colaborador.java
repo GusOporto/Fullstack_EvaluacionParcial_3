@@ -75,14 +75,14 @@ public class Colaborador {
     @EqualsAndHashCode.Exclude
     private List<Sucursal> sucursales = new ArrayList<>();
 
-    // Relaciones Externas
-    @NotNull(message = "Debe seleccionar un cargo.")
-    private Integer cargoId;
+    // // Relaciones Externas
+    // @NotNull(message = "Debe seleccionar un cargo.")
+    // private Integer cargoId;
 
-    @NotNull(message = "Debe asociar un curriculum.")
-    private Integer curriculumId;
+    // @NotNull(message = "Debe asociar un curriculum.")
+    // private Integer curriculumId;
 
-    @NotNull(message = "Debe seleccionar un titulo.")
-    private List<Integer> titulosId;
+    // @NotNull(message = "Debe seleccionar un titulo.")
+    // private List<Integer> titulosId;
 
 }

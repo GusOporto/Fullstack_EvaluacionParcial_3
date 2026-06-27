@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.RRHH.ColaboradoresSucursales.DTO.ColaboradorDTO;
 import com.RRHH.ColaboradoresSucursales.DTO.SucursalDTO;
 import com.RRHH.ColaboradoresSucursales.model.Sucursal;
 import com.RRHH.ColaboradoresSucursales.repository.ColaboradorRepository;
@@ -24,10 +25,16 @@ public class SucursalService {
     @Autowired
     private ColaboradorRepository colaboradorRepository;
 
+    @Autowired
+    private SucursalValidaciones sucursalValidaciones;
+
+    @Autowired
+    private ColaboradorValidaciones colaboradorValidaciones;
+
     public List<SucursalDTO> findAll() {
         log.info("Buscando todas las sucursales...");
         return sucursalRepository.findAll().stream()
-                .map(this::convertirADTO)
+                .map(sucursalValidaciones::convertirADTO)
                 .toList();
     }
 
@@ -35,13 +42,13 @@ public class SucursalService {
         log.info("Buscando sucursal con ID: {}", id);
         Sucursal sucursal = sucursalRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Sucursal no encontrada."));
-        return convertirADTO(sucursal);
+        return sucursalValidaciones.convertirADTO(sucursal);
     }
 
     public SucursalDTO save(Sucursal sucursal) {
         log.info("Guardando nueva sucursal: {}", sucursal.getNombre());
         Sucursal guardado = sucursalRepository.save(sucursal);
-        return convertirADTO(guardado);
+        return sucursalValidaciones.convertirADTO(guardado);
     }
 
     public String delete(Long id) {
@@ -71,28 +78,18 @@ public class SucursalService {
             sucursal2.setComuna(sucursal1.getComuna());
         }
         Sucursal guardado = sucursalRepository.save(sucursal2);
-        return convertirADTO(guardado);
+        return sucursalValidaciones.convertirADTO(guardado);
     }
 
-    private SucursalDTO convertirADTO(Sucursal sucursal) {
-        SucursalDTO dto = new SucursalDTO();
-        dto.setId(sucursal.getId());
-        dto.setNombre(sucursal.getNombre());
-        dto.setDireccion(sucursal.getDireccion());
-
-        if (sucursal.getComuna() != null) {
-            dto.setComuna("ID: " + sucursal.getComuna().getId() + " - " + sucursal.getComuna().getNombre());
-            if (sucursal.getComuna().getRegion() != null) {
-                dto.setRegion("ID: " + sucursal.getComuna().getRegion().getId() + " - "
-                        + sucursal.getComuna().getRegion().getNombre());
-            }
+    public List<ColaboradorDTO> findColaboradoresBySucursalId(Long id) {
+        log.info("Buscando colaboradores por Sucursal ID: {}", id);
+        if (!sucursalRepository.existsById(id)) {
+            throw new RuntimeException("Sucursal no encontrada.");
         }
 
-        List<String> colaboradores = colaboradorRepository.findDistinctBySucursalesId(sucursal.getId()).stream()
-                .map(c -> "ID: " + c.getId() + " - " + c.getNombres() + " - " + c.getApellidos())
+        return colaboradorRepository.findDistinctBySucursalesId(id).stream()
+                .map(colaboradorValidaciones::convertirADTO)
                 .toList();
-
-        dto.setColaboradores(colaboradores);
-        return dto;
     }
+
 }

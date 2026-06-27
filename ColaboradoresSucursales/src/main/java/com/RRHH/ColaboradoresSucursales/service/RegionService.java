@@ -23,10 +23,10 @@ import lombok.extern.slf4j.Slf4j;
 public class RegionService {
 
     @Autowired
-    private RegionRepository regionRepository;
+    private RegionValidaciones regionValidaciones;
 
     @Autowired
-    private ComunaRepository comunaRepository;
+    private RegionRepository regionRepository;
 
     @Autowired
     private SucursalRepository sucursalRepository;
@@ -34,7 +34,7 @@ public class RegionService {
     public List<RegionDTO> findAll() {
         log.info("Buscando todas las regiones...");
         return regionRepository.findAll().stream()
-                .map(this::convertirADTO)
+                .map(regionValidaciones::convertirADTO)
                 .toList();
     }
 
@@ -42,7 +42,7 @@ public class RegionService {
         log.info("Buscando region por ID: {}", id);
         Region region = regionRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Region no encontrada."));
-        return convertirADTO(region);
+        return regionValidaciones.convertirADTO(region);
     }
 
     public List<SucursalDTO> findSucursalesByRegionId(Long id) {
@@ -69,7 +69,7 @@ public class RegionService {
     public RegionDTO save(Region region) {
         log.info("Guardando nueva region: {}", region.getNombre());
         Region guardado = regionRepository.save(region);
-        return convertirADTO(guardado);
+        return regionValidaciones.convertirADTO(guardado);
     }
 
     public String delete(Long id) {
@@ -92,24 +92,7 @@ public class RegionService {
             region2.setNombre(region1.getNombre());
         }
         Region actualizado = regionRepository.save(region2);
-        return convertirADTO(actualizado);
+        return regionValidaciones.convertirADTO(actualizado);
     }
 
-    private RegionDTO convertirADTO(Region region) {
-        RegionDTO dto = new RegionDTO();
-        dto.setId(region.getId());
-        dto.setNombre(region.getNombre());
-
-        List<String> comunas = comunaRepository.findByRegionId(region.getId()).stream()
-                .map(c -> "ID: " + c.getId() + " - " + c.getNombre())
-                .toList();
-        dto.setComunas(comunas);
-
-        List<String> sucursales = sucursalRepository.findByComunaRegionId(region.getId()).stream()
-                .map(s -> "ID: " + s.getId() + " - " + s.getNombre())
-                .toList();
-        dto.setSucursales(sucursales);
-
-        return dto;
-    }
 }

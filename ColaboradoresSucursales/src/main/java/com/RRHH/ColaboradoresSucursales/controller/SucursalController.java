@@ -20,6 +20,8 @@ import com.RRHH.ColaboradoresSucursales.model.Sucursal;
 import com.RRHH.ColaboradoresSucursales.service.SucursalService;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
@@ -33,6 +35,10 @@ public class SucursalController {
 
     @GetMapping
     @Operation(summary = "Listar sucursales", description = "Obtiene una lista de todas las sucursales registradas.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Lista de sucursales obtenida exitosamente"),
+        @ApiResponse(responseCode = "204", description = "No hay sucursales registradas")
+    })
     public ResponseEntity<List<SucursalDTO>> listar() {
         List<SucursalDTO> sucursales = sucursalService.findAll();
         if (sucursales.isEmpty()) {
@@ -43,6 +49,10 @@ public class SucursalController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Buscar sucursal por ID", description = "Obtiene una sucursal específica por su ID.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Sucursal encontrada exitosamente"),
+        @ApiResponse(responseCode = "404", description = "Sucursal no encontrada")
+    })
     public ResponseEntity<SucursalDTO> buscarPorId(@PathVariable Long id) {
         try {
             SucursalDTO sucursal = sucursalService.findById(id);
@@ -54,6 +64,10 @@ public class SucursalController {
 
     @PostMapping
     @Operation(summary = "Agregar sucursal", description = "Crea una nueva sucursal en el sistema.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "201", description = "Sucursal creada exitosamente"),
+        @ApiResponse(responseCode = "400", description = "Datos de entrada inválidos")
+    })
     public ResponseEntity<SucursalDTO> agregar(@Valid @RequestBody Sucursal sucursal) {
         try {
             SucursalDTO guardadoDTO = sucursalService.save(sucursal);
@@ -65,6 +79,10 @@ public class SucursalController {
 
     @PatchMapping("/{id}")
     @Operation(summary = "Editar sucursal", description = "Actualiza la información de una sucursal existente por ID.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Sucursal actualizada exitosamente"),
+        @ApiResponse(responseCode = "404", description = "Sucursal no encontrada")
+    })
     public ResponseEntity<SucursalDTO> editarSucursal(@PathVariable Long id, @RequestBody Sucursal sucursal) {
         try {
             SucursalDTO editadoDTO = sucursalService.updateSucursal(id, sucursal);
@@ -76,6 +94,10 @@ public class SucursalController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Actualizar sucursal", description = "Reemplaza la información de una sucursal existente por ID.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Sucursal actualizada exitosamente"),
+        @ApiResponse(responseCode = "404", description = "Sucursal no encontrada")
+    })
     public ResponseEntity<SucursalDTO> actualizar(@PathVariable Long id, @Valid @RequestBody Sucursal sucursal) {
         try {
             SucursalDTO actualizadoDTO = sucursalService.updateSucursal(id, sucursal);
@@ -87,6 +109,10 @@ public class SucursalController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Eliminar sucursal", description = "Elimina una sucursal específica del sistema por ID.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Sucursal eliminada exitosamente"),
+        @ApiResponse(responseCode = "404", description = "Sucursal no encontrada")
+    })
     public ResponseEntity<?> eliminar(@PathVariable Long id) {
         String resultado = sucursalService.delete(id);
         if (resultado.contains("exitosamente")) {

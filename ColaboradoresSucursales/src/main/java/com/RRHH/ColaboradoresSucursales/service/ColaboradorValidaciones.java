@@ -1,11 +1,15 @@
 package com.RRHH.ColaboradoresSucursales.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import com.RRHH.ColaboradoresSucursales.DTO.ColaboradorDTO;
 import com.RRHH.ColaboradoresSucursales.model.Colaborador;
+import com.RRHH.ColaboradoresSucursales.model.Sucursal;
 
 @Service
 public class ColaboradorValidaciones {
@@ -41,31 +45,10 @@ public class ColaboradorValidaciones {
         return true;
     }
 
-    public CargoExternoDTO obtenerCargo(Long id) {
-        CargoExternoDTO cargoRecuperado = new CargoExternoDTO();
-        try {
-            CargoExternoDTO resultado = webClientBuilder.build()
-                    .get()
-                    .uri("http://laborales/api/v1/cargos/buscar-por-colaborador" + id)
-                    .retrieve()
-                    .bodyToMono(CargoExternoDTO.class)
-                    .block();
-
-            if (resultado != null) {
-                return resultado;
-            }
-            cargoRecuperado.setId(0);
-            cargoRecuperado.setNombreCargo("Sin Cargo asignado");
-            return cargoRecuperado;
-
-        } catch (Exception e) {
-            cargoRecuperado.setId(0);
-            cargoRecuperado.setNombreCargo("No se pudo conectar con el Colaborador");
-            return cargoRecuperado;
-        }
-    }
-
     public ColaboradorDTO convertirADTO(Colaborador colaborador) {
+        if (colaborador == null)
+            return null;
+
         ColaboradorDTO dto = new ColaboradorDTO();
         dto.setId(colaborador.getId());
         dto.setRun(colaborador.getRun());
@@ -75,7 +58,18 @@ public class ColaboradorValidaciones {
         dto.setTelefono(colaborador.getTelefono());
         dto.setCorreo(colaborador.getCorreo());
         dto.setDireccion(colaborador.getDireccion());
-        dto.setCargoId(obtenerCargo(colaborador.getId()));
+
+        List<String> sucursales = new ArrayList<>();
+        if (colaborador.getSucursales() != null) {
+            for (Sucursal s : colaborador.getSucursales()) {
+                sucursales.add("ID: " + s.getId() + " - " + s.getNombre());
+            }
+        }
+        dto.setSucursales(sucursales);
+
+        // dto.setCurriculumId(colaborador.getCurriculumId());
+        // dto.setTituloId(colaborador.getTitulosId());
+
         return dto;
     }
 
