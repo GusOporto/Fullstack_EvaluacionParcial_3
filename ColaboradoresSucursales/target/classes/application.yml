@@ -4,16 +4,14 @@ server:
 springdoc:
     api-docs:
         path: /ColaboradoresSucursales/api-docs
-    packages-to-scan: 
-        com.RRHH.ColaboradoresSucursales.controller
-    use-management-port: false
-    override-with-generic-response: true
     
 spring:
     application:
-        name: ColaboradoresSucursales    
+        name: ColaboradoresSucursales
+    main:
+        allow-bean-definition-overriding: true  
     flyway:
-        enabled: true 
+        enabled: 'true' 
         baseline-on-migrate: 'true'
     jpa:
         show-sql: 'true'
@@ -53,7 +51,7 @@ spring:
         password: ''
     jpa:
         hibernate:
-            ddl-auto: update
+            ddl-auto: none
 
 ---
 
