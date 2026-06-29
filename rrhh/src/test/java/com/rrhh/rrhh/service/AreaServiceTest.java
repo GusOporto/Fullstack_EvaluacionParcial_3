@@ -24,17 +24,22 @@ public class AreaServiceTest {
     @Mock
     private AreaRepository areaRepository;
 
+    @Mock
+    private AreaValidaciones areaValidaciones;
+
     @InjectMocks
     private AreaService areaService;
 
     private Area area;
 
+    private AreaDTO areaDTO;
+
     @BeforeEach
     public void setUp() {
-        area = new Area();
-        area.setId(1L);
-        area.setNombre("Recursos Humanos");
-        area.setDescripcion("Área encargada de la gestión del personal");
+        areaDTO = new AreaDTO();
+        areaDTO.setId(1L);
+        areaDTO.setNombre("Recursos Humanos");
+        areaDTO.setDescripcion("Área encargada de la gestión del personal");
     }
 
     @Test
@@ -42,6 +47,7 @@ public class AreaServiceTest {
     public void ObteenrAreas_debeRetornarListaDeAreaDTOs() {
         // Given
         when(areaRepository.findAll()).thenReturn(List.of(area));
+        when(areaValidaciones.convertirADTO(area)).thenReturn(areaDTO);
         // When
         List<AreaDTO> resultado = areaService.obtenerAreas();
         // Then
@@ -59,6 +65,7 @@ public class AreaServiceTest {
 
         // Given
         when(areaRepository.findById(1L)).thenReturn(java.util.Optional.of(area));
+        when(areaValidaciones.convertirADTO(area)).thenReturn(areaDTO);
         // When
         AreaDTO resultado = areaService.buscarPorId(1L);
         // Then
@@ -75,6 +82,7 @@ public class AreaServiceTest {
     public void guardarArea_deberiaRetornarAreaDTO() {
         // Given
         when(areaRepository.save(any(Area.class))).thenReturn(area);
+        when(areaValidaciones.convertirADTO(area)).thenReturn(areaDTO);
         // When
         AreaDTO resultado = areaService.guardarArea(area);
         // Then
@@ -96,8 +104,15 @@ public class AreaServiceTest {
         areaActualizada.setNombre("Finanzas");
         areaActualizada.setDescripcion("Área encargada de la gestión financiera");
 
+        AreaDTO areaActualizadaDTO = new AreaDTO();
+        areaActualizadaDTO.setId(1L);
+        areaActualizadaDTO.setNombre("Finanzas");
+        areaActualizadaDTO.setDescripcion("Área encargada de la gestión financiera");
+
         when(areaRepository.findById(1L)).thenReturn(java.util.Optional.of(area));
         when(areaRepository.save(any(Area.class))).thenReturn(areaActualizada);
+        when(areaValidaciones.convertirADTO(areaActualizada)).thenReturn(areaActualizadaDTO);
+
         // When
         AreaDTO resultado = areaService.actualizarArea(1L, areaActualizada);
 
@@ -109,6 +124,7 @@ public class AreaServiceTest {
 
         verify(areaRepository).findById(1L);
         verify(areaRepository).save(any(Area.class));
+
     }
 
     @Test
