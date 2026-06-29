@@ -17,6 +17,8 @@ Este proyecto forma parte de una arquitectura distribuida orientada a la gestió
 #### 17kjaja (Benjamin Saavedra):
 
 #### kris-binimelis (Krishna Binimelis):
+Desarrollo del microservicio de Rrhh, implementando la gestión de Áreas y Tipos de Contrato mediante operaciones CRUD. Se incorporó documentación con Swagger/OpenAPI, DTOs, HATEOAS, pruebas unitarias con Mockito, clases de validación para mantener una mejor organización del código, configuración de WebClient para futuras comunicaciones entre microservicios y configuración del proyecto para su integración con el ecosistema de microservicios.
+
 
 ### 4. Rutas Principales del API Gateway
 El sistema centraliza el tráfico a través de Spring Cloud Gateway. Las rutas configuradas en el archivo YAML son:   
