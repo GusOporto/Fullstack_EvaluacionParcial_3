@@ -14,10 +14,12 @@ spring:
               uri: lb://ColaboradoresSucursales
               predicates:
                 - Path=/api/v1/colaboradores/**, /api/v2/colaboradores/**, /ColaboradoresSucursales/api-docs/**
+            
             - id: laborales-service
               uri: lb://laborales
               predicates:
                 - Path=/api/v1/laborales/**, /laborales/api-docs/**
+            
             - id: rrhh-service
               uri: lb://rrhh
               predicates:
