@@ -10,7 +10,6 @@ import com.RRHH.ColaboradoresSucursales.DTO.RegionDTO;
 import com.RRHH.ColaboradoresSucursales.DTO.SucursalDTO;
 import com.RRHH.ColaboradoresSucursales.model.Region;
 import com.RRHH.ColaboradoresSucursales.model.Sucursal;
-import com.RRHH.ColaboradoresSucursales.repository.ComunaRepository;
 import com.RRHH.ColaboradoresSucursales.repository.RegionRepository;
 import com.RRHH.ColaboradoresSucursales.repository.SucursalRepository;
 

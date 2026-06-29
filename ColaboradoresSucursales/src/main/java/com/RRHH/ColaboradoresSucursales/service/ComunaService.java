@@ -9,7 +9,6 @@ import com.RRHH.ColaboradoresSucursales.DTO.ComunaDTO;
 import com.RRHH.ColaboradoresSucursales.DTO.SucursalDTO;
 import com.RRHH.ColaboradoresSucursales.model.Comuna;
 import com.RRHH.ColaboradoresSucursales.model.Sucursal;
-import com.RRHH.ColaboradoresSucursales.repository.ColaboradorRepository;
 import com.RRHH.ColaboradoresSucursales.repository.ComunaRepository;
 import com.RRHH.ColaboradoresSucursales.repository.SucursalRepository;
 
