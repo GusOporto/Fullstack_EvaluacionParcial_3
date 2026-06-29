@@ -18,14 +18,19 @@ public class TipoContratoService {
     @Autowired
     private TipoContratoRepository tipoContratoRepository;
 
+    @Autowired
+    private TipoContratoValidaciones tipoContratoValidaciones;
+
     public List<TipoContratoDTO> obtenerTipoContrato() {
-        return tipoContratoRepository.findAll().stream().map(this::convertirADTO).toList();
+        return tipoContratoRepository.findAll().stream()
+                .map(tipoContratoValidaciones::convertirADTO)
+                .toList();
     }
 
     public TipoContratoDTO buscarPorId(Long id) {
         TipoContrato contrato = tipoContratoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Tipo de contrato no encontrado!"));
-        return convertirADTO(contrato);
+        return tipoContratoValidaciones.convertirADTO(contrato);
     }
 
     public String eliminar(Long id) {
@@ -41,7 +46,7 @@ public class TipoContratoService {
 
     public TipoContratoDTO guardarTipoContrato(TipoContrato tipoContrato) {
         TipoContrato guardado = tipoContratoRepository.save(tipoContrato);
-        return convertirADTO(guardado);
+        return tipoContratoValidaciones.convertirADTO(guardado);
     }
 
     public TipoContratoDTO actualizarTipoContrato(Long id, TipoContrato tipoContrato) {
@@ -59,17 +64,7 @@ public class TipoContratoService {
             contratoExistente.setFechaCreacion(tipoContrato.getFechaCreacion());
 
         TipoContrato actualizado = tipoContratoRepository.save(contratoExistente);
-        return convertirADTO(actualizado);
+        return tipoContratoValidaciones.convertirADTO(actualizado);
     }
 
-    private TipoContratoDTO convertirADTO(TipoContrato contrato) {
-        TipoContratoDTO dto = new TipoContratoDTO();
-        dto.setId(contrato.getId());
-        dto.setNombre(contrato.getNombre());
-        dto.setDescripcion(contrato.getDescripcion());
-        dto.setModalidad(contrato.getModalidad());
-        dto.setJornada(contrato.getJornada());
-        dto.setFechaCreacion(contrato.getFechaCreacion());
-        return dto;
-    }
 }

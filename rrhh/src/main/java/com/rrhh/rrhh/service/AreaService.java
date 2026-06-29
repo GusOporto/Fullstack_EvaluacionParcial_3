@@ -18,14 +18,17 @@ public class AreaService {
     @Autowired
     private AreaRepository areaRepository;
 
+    @Autowired
+    private AreaValidaciones areaValidaciones;
+
     public List<AreaDTO> obtenerAreas() {
-        return areaRepository.findAll().stream().map(this::convertirADTO).toList();
+        return areaRepository.findAll().stream().map(areaValidaciones::convertirADTO).toList();
 
     }
 
     public AreaDTO buscarPorId(Long id) {
         Area area = areaRepository.findById(id).orElseThrow(() -> new RuntimeException("¡Área no encontrada!"));
-        return convertirADTO(area);
+        return areaValidaciones.convertirADTO(area);
     }
 
     public String eliminar(Long id) {
@@ -41,7 +44,7 @@ public class AreaService {
 
     public AreaDTO guardarArea(Area area) {
         Area guardada = areaRepository.save(area);
-        return convertirADTO(guardada);
+        return areaValidaciones.convertirADTO(guardada);
     }
 
     public AreaDTO actualizarArea(Long id, Area area) {
@@ -54,15 +57,7 @@ public class AreaService {
             areaExistente.setDescripcion(area.getDescripcion());
         }
         Area actualizada = areaRepository.save(areaExistente);
-        return convertirADTO(actualizada);
-    }
-
-    private AreaDTO convertirADTO(Area area) {
-        AreaDTO dto = new AreaDTO();
-        dto.setId(area.getId());
-        dto.setNombre(area.getNombre());
-        dto.setDescripcion(area.getDescripcion());
-        return dto;
+        return areaValidaciones.convertirADTO(actualizada);
     }
 
 }
